@@ -64,4 +64,10 @@ public interface Table {
      * @return Количество отменённых ключей.
      */
     int rollback();
+    /**
+     * Выводит список ключей таблицы
+     *
+     * @return Список ключей.
+     */
+    List<String> list();
 }
