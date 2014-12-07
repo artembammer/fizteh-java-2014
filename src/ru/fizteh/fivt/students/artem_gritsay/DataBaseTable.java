@@ -1,21 +1,20 @@
-package ru.fizteh.fivt.students.artem_gritsay.DataBase;
+package ru.fizteh.fivt.students.artem_gritsay;
 
-/**
- * Created by artem on 26.11.14.
- */
+
+import ru.fizteh.fivt.storage.strings.Table;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.*;
 
-public class DataBaseTable {
+public class DataBaseTable implements Table {
     private String nameoftable;
-    private static final int PARTITIONS = 16;
+    public static final int PARTITIONS = 16;
     private Map<Integer, DbRecord> records;
     private Path pathtotable;
     private Map<String, String> currentDataRecords;
-    private static final String CODE = "UTF-8";
+    public static final String CODE = "UTF-8";
     private static final String DirName = "([0-9]|1[0-5])\\.dir";
     private static final String FileName = "([0-9]|1[0-5])\\.dat";
 
@@ -37,12 +36,12 @@ public class DataBaseTable {
         String[] listDir = pathtotable.toFile().list();
         for (String dir : listDir) {
             Path currentDir = pathtotable.resolve(dir);
-            if (!currentDir.toFile().isDirectory() || !currentDir.matches(DirName)) {
+            if (!currentDir.toFile().isDirectory() || !dir.matches(DirName)) {
                 throw new myDataBaseException("File '" + dir + "' is not directory",null);
             }
             String[] filelist = currentDir.toFile().list();
             if (filelist.length == 0) {
-                throw new myDataBaseException("Directory '" + dir "' is empty", null);
+                throw new myDataBaseException("Directory '" + dir + "' is empty", null);
             }
             for (String file : filelist) {
                 Path pathtofile = currentDir.resolve(file);

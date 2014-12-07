@@ -2,9 +2,7 @@ package ru.fizteh.fivt.students.artem_gritsay.Interpretator;
 
 import java.util.function.BiConsumer;
 
-/**
- * Created by artem on 01.12.14.
- */
+
 public class Command {
     private String name;
     private int numberofargs;

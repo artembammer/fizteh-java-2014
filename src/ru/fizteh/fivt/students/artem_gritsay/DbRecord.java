@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.artem_gritsay.DataBase;
+package ru.fizteh.fivt.students.artem_gritsay;
 
 
 

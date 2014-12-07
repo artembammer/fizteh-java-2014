@@ -1,8 +1,6 @@
 package ru.fizteh.fivt.students.artem_gritsay.Interpretator;
 
-/**
- * Created by artem on 01.12.14.
- */
+
 public class StopException extends RuntimeException {
     boolean status;
     public StopException(String s) {

@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
-/**
- * Created by artem on 01.12.14.
- */
+
 public class Interpretator {
 
     private InputStream in;
@@ -119,6 +117,9 @@ public class Interpretator {
 
     public Interpretator(Object func, Command[] commands) {
         this(func, commands, System.in, System.out);
+    }
+    public void setExitFlags(Callable<Boolean> callable) {
+        exitFlag = callable;
     }
 
 
