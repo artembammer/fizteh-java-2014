@@ -65,5 +65,4 @@ public interface Table {
      * @return Количество отменённых ключей.
      */
     int rollback();
-    List<String> list();
 }
