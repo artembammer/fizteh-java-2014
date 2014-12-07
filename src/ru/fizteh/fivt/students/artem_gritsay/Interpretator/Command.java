@@ -8,7 +8,8 @@ public class Command {
     private int numberofargs;
     private BiConsumer<Object, String[]> callbackfunc;
 
-    public Command(String name, int number, BiConsumer<Object, String[]> callbackfunc) {
+    public Command(String name, int number,
+                   BiConsumer<Object, String[]> callbackfunc) {
         numberofargs = number;
         this.name = name;
         this.callbackfunc = callbackfunc;

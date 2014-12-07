@@ -1,5 +1,7 @@
 package ru.fizteh.fivt.storage.strings;
 
+import java.util.List;
+
 /**
  * @author Fedor Lavrentyev
  * @author Dmitriy Komanov
@@ -17,7 +19,7 @@ public interface Table {
      * @param key Ключ.
      * @return Значение. Если не найдено, возвращает null.
      *
-     * @throws IllegalArgumentException Если значение параметра key является null.
+     * @throws IllegalArgumentException Еcли значение параметра key является null.
      */
     String get(String key);
 
@@ -63,4 +65,5 @@ public interface Table {
      * @return Количество отменённых ключей.
      */
     int rollback();
+    List<String> list();
 }
