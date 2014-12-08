@@ -5,6 +5,7 @@ public class StopException extends RuntimeException {
     private final boolean status;
     public StopException(String s) {
         super(s);
+        status = false;
     }
     public StopException(boolean status) {
         super();
