@@ -18,7 +18,7 @@ public class DbRecord {
     private Path pathfofile;
     private Map<String, String> data;
 
-    public DbRecord(Path tableDirPath, int numberofdir, int numberoffile) throws MyDataBaseException {
+    public DbRecord(Path tableDirPath, int numberofdir, int numberoffile) throws DataBaseException {
         this.numberofdir = numberofdir;
         this.numberoffile = numberoffile;
         data = new HashMap<>();
@@ -27,7 +27,7 @@ public class DbRecord {
             try {
                 readFile();
             } catch (IOException e) {
-                throw new MyDataBaseException("Cannot read file '" + pathfofile.toString() + "': " + e.getMessage(), e);
+                throw new DataBaseException("Cannot read file '" + pathfofile.toString() + "': " + e.getMessage(), e);
             }
         }
     }
@@ -152,7 +152,7 @@ public class DbRecord {
         return data.get(key);
     }
 
-    public void commit() throws MyDataBaseException {
+    public void commit() throws DataBaseException {
         if (getNumberOfRecords() == 0) {
             pathfofile.toFile().delete();
             pathfofile.getParent().toFile().delete();
@@ -160,7 +160,7 @@ public class DbRecord {
             try {
                 writeToFile();
             } catch (IOException e) {
-                throw new MyDataBaseException("Error writing to file '"
+                throw new DataBaseException("Error writing to file '"
                         + pathfofile.toString() + "': " + e.getMessage(), e);
             }
         }
