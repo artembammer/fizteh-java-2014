@@ -33,7 +33,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void RunInInteractive()
+    public void runInInteractive()
             throws Exception {
         Interpretator interpretator = new Interpretator(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {
@@ -49,7 +49,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void RunInBatchMode() throws Exception {
+    public void runInBatchMode() throws Exception {
         Interpretator interpreter = new Interpretator(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {
                     @Override
@@ -62,7 +62,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ButchModeForUnexpectedCommand() throws Exception {
+    public void butchModeForUnexpectedCommand() throws Exception {
         Interpretator interpreter = new Interpretator(null, new Command[] {},
                 new ByteArrayInputStream(new byte[] {}), printStream);
         interpreter.run(new String[] {testCommand + ";", testCommand});
@@ -71,7 +71,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void RunInterpreterInInteractiveModeForUnexpectedCommand()
+    public void runInterpreterInInteractiveModeForUnexpectedCommand()
             throws Exception {
         String testInput = testCommand + temppathtonewline + testCommand;
         Interpretator interpreter = new Interpretator(null, new Command[] {},
@@ -85,7 +85,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void CommandWithWrongNumberOfArguments()
+    public void commandWithWrongNumberOfArguments()
             throws Exception {
         Interpretator interpreter = new Interpretator(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {

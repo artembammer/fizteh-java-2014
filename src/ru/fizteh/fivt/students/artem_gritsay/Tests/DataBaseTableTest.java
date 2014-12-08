@@ -37,31 +37,31 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void CreatedForNonexistentDirectory() {
+    public void createdForNonexistentDirectory() {
         new DataBaseTable(temppathtoroot, tableName);
     }
 
     @Test(expected = RuntimeException.class)
-    public void ThrowsExceptionLoadedDirectoryWithWrongNamedSubdirectory() {
+    public void throwsExceptionLoadedDirectoryWithWrongNamedSubdirectory() {
         temppathtoroot.resolve(wrongSubfileName).toFile().mkdir();
         new DataBaseTable(temppathtoroot, tableName);
     }
 
     @Test(expected = RuntimeException.class)
-    public void ThrowsExceptionLoadedDirectoryWithEmptySubdirectory() {
+    public void throwsExceptionLoadedDirectoryWithEmptySubdirectory() {
         temppathtoroot.resolve(requiredSubdirectoryName).toFile().mkdir();
         new DataBaseTable(temppathtoroot, tableName);
     }
 
     @Test(expected = RuntimeException.class)
-    public void ThrowsExceptionLoadedDirectoryWithSubfileNotInSubdirectory()
+    public void throwsExceptionLoadedDirectoryWithSubfileNotInSubdirectory()
             throws IOException {
         temppathtoroot.resolve(requiredSubdirectoryName).toFile().createNewFile();
         new DataBaseTable(temppathtoroot, tableName);
     }
 
     @Test(expected = RuntimeException.class)
-    public void ThrowsExceptionLoadedDirectoryWithWrongNamedFileInSubdirectory()
+    public void throwsExceptionLoadedDirectoryWithWrongNamedFileInSubdirectory()
             throws IOException {
         Path subdirectoryPath = temppathtoroot.resolve(requiredSubdirectoryName);
         subdirectoryPath.toFile().mkdir();
@@ -70,7 +70,7 @@ public class DataBaseTableTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void ThrowsExceptionLoadedDirectoryWithDirectoryInSubdirectory()
+    public void throwsExceptionLoadedDirectoryWithDirectoryInSubdirectory()
             throws IOException {
         Path subdirectoryPath = temppathtoroot.resolve(requiredSubdirectoryName);
         subdirectoryPath.toFile().mkdir();
@@ -79,7 +79,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void LoadedCorrectNonemptyDirectory() throws IOException {
+    public void loadedCorrectNonemptyDirectory() throws IOException {
         Path subdirectoryPath = temppathtoroot.resolve(requiredSubdirectoryName);
         subdirectoryPath.toFile().mkdir();
         Path subfilePath = subdirectoryPath.resolve(requiredSubfileName);
@@ -94,26 +94,26 @@ public class DataBaseTableTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void PutThrowsExceptionCalledForNullKeyAndNonNullValue() {
+    public void putThrowsExceptionCalledForNullKeyAndNonNullValue() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         test.put(null, testValue);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void PutThrowsExceptionCalledForNonNullKeyAndNullValue() {
+    public void putThrowsExceptionCalledForNonNullKeyAndNullValue() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         test.put(testKey, null);
     }
 
     @Test
-    public void CommitPuttingNonNullKeyAndValue() {
+    public void commitPuttingNonNullKeyAndValue() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.commit();
     }
 
     @Test
-    public void CommitPuttingTwiceNonNullKeyAndValue() {
+    public void commitPuttingTwiceNonNullKeyAndValue() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         assertEquals(testValue, test.put(testKey, testValue));
@@ -121,7 +121,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void CommitOverwritingCommitedKey() {
+    public void commitOverwritingCommitedKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.commit();
@@ -130,26 +130,26 @@ public class DataBaseTableTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void GetThrowsExceptionCalledForNullKey() {
+    public void getThrowsExceptionCalledForNullKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         test.get(null);
     }
 
     @Test
-    public void GetCalledForNonexistentKey() {
+    public void getCalledForNonexistentKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.get(testKey));
     }
 
     @Test
-    public void GetCalledForNonComittedExistentKey() {
+    public void getCalledForNonComittedExistentKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         assertEquals(testValue, test.get(testKey));
     }
 
     @Test
-    public void GetCalledForComittedExistentKey() {
+    public void getCalledForComittedExistentKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.commit();
@@ -157,7 +157,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void RollbackAfterPuttingNewKey() {
+    public void rollbackAfterPuttingNewKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(0, test.size());
         assertEquals(null, test.put(testKey, testValue));
@@ -168,7 +168,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void RollbackWithoutAnyChanges() {
+    public void rollbackWithoutAnyChanges() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.rollback();
@@ -185,7 +185,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void CommitRemovingNonexistentKeyFromNonCommitedFile() {
+    public void commitRemovingNonexistentKeyFromNonCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.remove(testKey));
         test.commit();
@@ -200,7 +200,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void CommitRemovingExistentKeyFromCommitedFile() {
+    public void commitRemovingExistentKeyFromCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.commit();
@@ -209,7 +209,7 @@ public class DataBaseTableTest {
     }
 
     @Test
-    public void CommitRemovingNonexistentKeyFromCommitedFile() {
+    public void commitRemovingNonexistentKeyFromCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.remove(testKey));
         test.commit();
@@ -217,7 +217,7 @@ public class DataBaseTableTest {
 
 
     @Test
-    public void CommitEmptiedAfterLoadingTable() {
+    public void commitEmptiedAfterLoadingTable() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         test.commit();

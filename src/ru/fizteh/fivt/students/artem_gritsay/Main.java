@@ -14,13 +14,13 @@ import java.util.function.BiConsumer;
 public final class Main {
     private static void execute(DataBaseState currentstate, String[] args) {
         Interpretator interpretator = new Interpretator(currentstate, new Command[] {
-                new Command("put",2,new BiConsumer<Object, String[]>() {
+                new Command("put", 2 , new BiConsumer<Object, String[]>() {
                     @Override
                     public void accept(Object o, String[] strings) {
-                        Table table =((DataBaseState) currentstate).getTable();
-                        if(table != null) {
-                            String oldValue = table.put(args[0],args[1]);
-                            if(oldValue != null) {
+                        Table table = ((DataBaseState) currentstate).getTable();
+                        if (table != null) {
+                            String oldValue = table.put(args[0], args[1]);
+                            if (oldValue != null) {
                                 System.out.println("overwrite");
                                 System.out.println(oldValue);
                             } else {
@@ -189,7 +189,7 @@ public final class Main {
 
         });
         try {
-            if(interpretator.run(args)) {
+            if (interpretator.run(args)) {
                 System.exit(1);
             } else {
                 System.exit(0);

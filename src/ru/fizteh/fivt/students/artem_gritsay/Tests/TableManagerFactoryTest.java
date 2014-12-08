@@ -29,7 +29,7 @@ public class TableManagerFactoryTest {
     }
 
     @Test
-    public void CreatedNewTableManager() {
+    public void createdNewTableManager() {
         TableProviderFactory test = new TableManagerFactory();
         TableProvider testProvider = test.create(testDir.toString());
         testProvider.createTable("testTable");

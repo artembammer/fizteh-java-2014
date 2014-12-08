@@ -13,9 +13,10 @@ import java.util.List;
 
 
 public final class TableManager implements TableProvider {
-    private static final String TablenameRegex = ".*\\.|\\..*|.*(/|\\\\).*";
-    private static final String NullNameTable = "Table name is null";
-    private static final String IncorrectTableName = "Incorrect table name";
+    private static final String TABLENAME = ".*\\.|\\..*|.*(/|\\\\).*";
+    private static final String NULL_NAME_TABLE = "Table name is null";
+    private static final String INCORRECT_TABLE_NAME = "Incorrect table name";
+
     private Path pathtotables;
     private List<String> tables;
 
@@ -44,31 +45,31 @@ public final class TableManager implements TableProvider {
     @Override
     public Table getTable(String name) {
         if (name == null) {
-            throw new IllegalArgumentException(NullNameTable);
+            throw new IllegalArgumentException(NULL_NAME_TABLE);
         }
         try {
             pathtotables.resolve(name);
-            if(name.matches(IncorrectTableName)) {
-                throw new IllegalArgumentException("IncorrectTableName");
+            if (name.matches(INCORRECT_TABLE_NAME)) {
+                throw new IllegalArgumentException("INCORRECT_TABLE_NAME");
             }
-            if(tables.contains(name)) {
-                return new DataBaseTable(pathtotables.resolve(name),name);
+            if (tables.contains(name)) {
+                return new DataBaseTable(pathtotables.resolve(name), name);
             } else {
                 return null;
             }
 
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(IncorrectTableName + e.getMessage(),e);
+            throw new IllegalArgumentException(INCORRECT_TABLE_NAME + e.getMessage(), e);
         }
     }
 
     @Override
     public Table createTable(String name) {
         if (name == null) {
-            throw new IllegalArgumentException(NullNameTable);
+            throw new IllegalArgumentException(NULL_NAME_TABLE);
         }
-        if (name.matches(IncorrectTableName)) {
-            throw new IllegalArgumentException(IncorrectTableName);
+        if (name.matches(INCORRECT_TABLE_NAME)) {
+            throw new IllegalArgumentException(INCORRECT_TABLE_NAME);
         }
 
         if (tables.contains(name)) {
@@ -76,7 +77,7 @@ public final class TableManager implements TableProvider {
             }
             Path newpathtotable = pathtotables.resolve(name);
             newpathtotable.toFile().mkdir();
-            Table table = new DataBaseTable(newpathtotable,name);
+            Table table = new DataBaseTable(newpathtotable, name);
             tables.add(name);
             return table;
     }
@@ -84,10 +85,10 @@ public final class TableManager implements TableProvider {
     @Override
     public void removeTable(String name) {
         if (name == null) {
-            throw new IllegalArgumentException(NullNameTable);
+            throw new IllegalArgumentException(NULL_NAME_TABLE);
         }
-        if (name.matches(IncorrectTableName)) {
-            throw new IllegalArgumentException(IncorrectTableName);
+        if (name.matches(INCORRECT_TABLE_NAME)) {
+            throw new IllegalArgumentException(INCORRECT_TABLE_NAME);
         }
         Path pathtotable = pathtotables.resolve(name);
         if (!tables.remove(name)) {
@@ -96,7 +97,7 @@ public final class TableManager implements TableProvider {
             try {
                 recoursiveDelete(pathtotable.toFile());
             } catch (IOException e) {
-                throw new RuntimeException("Table can't be removed: " + e.getMessage(),e);
+                throw new RuntimeException("Table can't be removed: " + e.getMessage(), e);
             }
         }
     }

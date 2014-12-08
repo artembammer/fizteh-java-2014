@@ -16,41 +16,41 @@ public class DbRecord {
     public static final String CODE = "UTF-8";
     public static final int PARTITIONS = 16;
     private Path pathfofile;
-    private Map<String,String> data;
+    private Map<String, String> data;
 
-    public DbRecord(Path tableDirPath, int numberofdir, int numberoffile) throws myDataBaseException {
+    public DbRecord(Path tableDirPath, int numberofdir, int numberoffile) throws MyDataBaseException {
         this.numberofdir = numberofdir;
         this.numberoffile = numberoffile;
         data = new HashMap<>();
         pathfofile = Paths.get(tableDirPath.toString(), numberofdir + ".dir", numberoffile + ".dat");
-        if(pathfofile.toFile().exists()) {
+        if (pathfofile.toFile().exists()) {
             try {
                 readFile();
             } catch (IOException e) {
-                throw new myDataBaseException("Cannot read file '" + pathfofile.toString() + "': " + e.getMessage(),e);
+                throw new MyDataBaseException("Cannot read file '" + pathfofile.toString() + "': " + e.getMessage(), e);
             }
         }
     }
 
 
     private void readFile() throws IOException {
-        try (RandomAccessFile file = new RandomAccessFile(pathfofile.toString(),"r")) {
-            ByteArrayOutputStream BufferBytes = new ByteArrayOutputStream();
+        try (RandomAccessFile file = new RandomAccessFile(pathfofile.toString(), "r")) {
+            ByteArrayOutputStream bufferBytes = new ByteArrayOutputStream();
             List<Integer> offsets = new LinkedList<>();
             List<String> keys = new LinkedList<>();
             int numberBytes = 0;
             byte b;
             do {
-                while ((b = file.readByte())!=0) {
+                while ((b = file.readByte()) != 0) {
                    numberBytes++;
-                   BufferBytes.write(b);
+                   bufferBytes.write(b);
                 }
                 numberBytes++;
                 offsets.add(file.readInt());
                 numberBytes += 4;
-                String key = BufferBytes.toString(CODE);
-                BufferBytes.reset();
-                if(checkkey(key)) {
+                String key = bufferBytes.toString(CODE);
+                bufferBytes.reset();
+                if (checkkey(key)) {
                     throw new IllegalArgumentException();
                 }
                 keys.add(key);
@@ -58,23 +58,23 @@ public class DbRecord {
             offsets.add((int) file.length());
             offsets.remove(0);
             Iterator<String> iter = keys.iterator();
-            for(int nextoffset : offsets) {
-                while (numberBytes <nextoffset) {
-                    BufferBytes.write(file.readByte());
+            for (int nextoffset : offsets) {
+                while (numberBytes < nextoffset) {
+                    bufferBytes.write(file.readByte());
                     numberBytes++;
                 }
-                if (BufferBytes.size() > 0 ) {
-                    if (data.put(iter.next(),BufferBytes.toString(CODE)) != null) {
+                if (bufferBytes.size() > 0) {
+                    if (data.put(iter.next(), bufferBytes.toString(CODE)) != null) {
                         throw new IllegalArgumentException("Key already exist in file");
                     }
-                    BufferBytes.reset();
+                    bufferBytes.reset();
                 } else {
                     throw new EOFException();
                 }
             }
-            BufferBytes.close();
+            bufferBytes.close();
         } catch (UnsupportedEncodingException e) {
-            throw new IOException("Can't be encoded to "+ CODE,e);
+            throw new IOException("Can't be encoded to " + CODE, e);
         } catch (IllegalArgumentException e) {
             throw new IOException("Wrong file or directory for key", e);
         } catch (EOFException e) {
@@ -84,8 +84,8 @@ public class DbRecord {
         }
     }
     private boolean checkkey(String key) throws UnsupportedEncodingException {
-        int expectednumberofdir = Math.abs(key.getBytes(CODE)[0]%PARTITIONS);
-        int expectednumberoffile = Math.abs((key.getBytes(CODE)[0]/PARTITIONS)%PARTITIONS);
+        int expectednumberofdir = Math.abs(key.getBytes(CODE)[0] % PARTITIONS);
+        int expectednumberoffile = Math.abs((key.getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
         return (numberofdir == expectednumberofdir && numberoffile == expectednumberoffile);
     }
     private void writeToFile() throws IOException {
@@ -123,12 +123,12 @@ public class DbRecord {
         return data.keySet();
     }
 
-    public int getNumberOfRecords () {
+    public int getNumberOfRecords() {
         return data.size();
     }
 
     public String remove(String key) throws UnsupportedEncodingException {
-        if(key==null || !checkkey(key)) {
+        if (key == null || !checkkey(key)) {
           throw new IllegalArgumentException(key + " not exist in file");
         } else {
             return data.remove(key);
@@ -142,7 +142,7 @@ public class DbRecord {
         if (value == null) {
             throw new IllegalArgumentException("Value cannot be null");
         }
-        return data.put(key,value);
+        return data.put(key, value);
     }
 
     public String get(String key) throws UnsupportedEncodingException {
@@ -152,7 +152,7 @@ public class DbRecord {
         return data.get(key);
     }
 
-    public void commit() throws myDataBaseException {
+    public void commit() throws MyDataBaseException {
         if (getNumberOfRecords() == 0) {
             pathfofile.toFile().delete();
             pathfofile.getParent().toFile().delete();
@@ -160,7 +160,7 @@ public class DbRecord {
             try {
                 writeToFile();
             } catch (IOException e) {
-                throw new myDataBaseException("Error writing to file '"
+                throw new MyDataBaseException("Error writing to file '"
                         + pathfofile.toString() + "': " + e.getMessage(), e);
             }
         }

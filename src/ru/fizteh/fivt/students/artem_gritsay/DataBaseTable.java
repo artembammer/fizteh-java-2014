@@ -15,8 +15,8 @@ public class DataBaseTable implements Table {
     private Path pathtotable;
     private Map<String, String> currentDataRecords;
     public static final String CODE = "UTF-8";
-    private static final String DirName = "([0-9]|1[0-5])\\.dir";
-    private static final String FileName = "([0-9]|1[0-5])\\.dat";
+    private static final String DIR_NAME = "([0-9]|1[0-5])\\.dir";
+    private static final String FILE_NAME = "([0-9]|1[0-5])\\.dat";
 
     public DataBaseTable(Path pathtotable, String name) {
         records = new HashMap<>();
@@ -25,43 +25,43 @@ public class DataBaseTable implements Table {
         nameoftable = name;
         try {
             readTable();
-        } catch (myDataBaseException e) {
+        } catch (MyDataBaseException e) {
             throw new RuntimeException("Error reading table '" + getName()
                     + "': " + e.getMessage(), e);
         }
 
     }
 
-    private void readTable() throws myDataBaseException {
+    private void readTable() throws MyDataBaseException {
         String[] listDir = pathtotable.toFile().list();
         for (String dir : listDir) {
             Path currentDir = pathtotable.resolve(dir);
-            if (!currentDir.toFile().isDirectory() || !dir.matches(DirName)) {
-                throw new myDataBaseException("File '" + dir + "' is not directory",null);
+            if (!currentDir.toFile().isDirectory() || !dir.matches(DIR_NAME)) {
+                throw new MyDataBaseException("File '" + dir + "' is not directory", null);
             }
             String[] filelist = currentDir.toFile().list();
             if (filelist.length == 0) {
-                throw new myDataBaseException("Directory '" + dir + "' is empty", null);
+                throw new MyDataBaseException("Directory '" + dir + "' is empty", null);
             }
             for (String file : filelist) {
                 Path pathtofile = currentDir.resolve(file);
-                if(!file.matches(FileName) || !pathtofile.toFile().isFile()) {
-                    throw new myDataBaseException("Name of file '" + file + "' is not supported",null);
+                if (!file.matches(FILE_NAME) || !pathtofile.toFile().isFile()) {
+                    throw new MyDataBaseException("Name of file '" + file + "' is not supported", null);
                 }
-                int numberofdir = Integer.parseInt(dir.substring(0,dir.length()-4));
-                int numberoffile = Integer.parseInt(file.substring(0,file.length() - 4));
-                DbRecord record = new DbRecord(pathtotable,numberofdir,numberoffile);
-                records.put(numberofdir*100 + numberoffile, record);
+                int numberofdir = Integer.parseInt(dir.substring(0, dir.length() - 4));
+                int numberoffile = Integer.parseInt(file.substring(0, file.length() - 4));
+                DbRecord record = new DbRecord(pathtotable, numberofdir, numberoffile);
+                records.put(numberofdir * 100 + numberoffile, record);
             }
         }
     }
 
-    private void writeTable() throws myDataBaseException {
+    private void writeTable() throws MyDataBaseException {
         Iterator<Map.Entry<Integer, DbRecord>> it = records.entrySet().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Map.Entry<Integer, DbRecord> record = it.next();
             record.getValue().commit();
-            if (record.getValue().getNumberOfRecords() == 0 ) {
+            if (record.getValue().getNumberOfRecords() == 0) {
                 it.remove();
             }
         }
@@ -70,26 +70,26 @@ public class DataBaseTable implements Table {
     public int getNumberofChages() {
         return currentDataRecords.size();
     }
-    private int getNumberofRecords (String key) {
+    private int getNumberofRecords(String key) {
         int numberoffile;
         int numberofdir;
         try {
-            numberofdir = Math.abs(key.getBytes(CODE)[0]%PARTITIONS);
-            numberoffile = Math.abs((key.getBytes(CODE)[0]/PARTITIONS)%PARTITIONS);
+            numberofdir = Math.abs(key.getBytes(CODE)[0] % PARTITIONS);
+            numberoffile = Math.abs((key.getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Unable to encode key to " + CODE,e);
+            throw new IllegalArgumentException("Unable to encode key to " + CODE, e);
         }
-        return numberofdir*PARTITIONS + numberoffile;
+        return numberofdir * PARTITIONS + numberoffile;
     }
 
     @Override
     public List<String> list() {
         List<String> keys = new LinkedList<>();
-        for(Map.Entry<Integer, DbRecord> pair : records.entrySet()) {
+        for (Map.Entry<Integer, DbRecord> pair : records.entrySet()) {
             keys.addAll(pair.getValue().list());
         }
         for (Map.Entry<String, String> pair : currentDataRecords.entrySet()) {
-            if(pair.getValue() == null) {
+            if (pair.getValue() == null) {
                 keys.remove(pair.getKey());
             } else {
                 keys.add(pair.getKey());
@@ -101,11 +101,11 @@ public class DataBaseTable implements Table {
     @Override
     public int size() {
         int numberOfRecords = 0;
-        for(Map.Entry<Integer, DbRecord> record : records.entrySet()) {
+        for (Map.Entry<Integer, DbRecord> record : records.entrySet()) {
             numberOfRecords += record.getValue().getNumberOfRecords();
         }
-        for(Map.Entry<String, String> record : currentDataRecords.entrySet()) {
-            if(record.getValue() == null) {
+        for (Map.Entry<String, String> record : currentDataRecords.entrySet()) {
+            if (record.getValue() == null) {
                 numberOfRecords--;
             } else {
                 numberOfRecords++;
@@ -120,17 +120,17 @@ public class DataBaseTable implements Table {
             throw new IllegalArgumentException("Key is null");
         }
         String oldvalue;
-        if(!currentDataRecords.containsKey(key)) {
+        if (!currentDataRecords.containsKey(key)) {
             DbRecord record = records.get(getNumberofRecords(key));
             if (record == null) {
                 oldvalue = null;
             } else {
                 try {
                     oldvalue = record.get(key);
-                } catch(UnsupportedEncodingException e) {
-                    throw new RuntimeException(e.getMessage(),e);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e.getMessage(), e);
                 }
-                currentDataRecords.put(key,null);
+                currentDataRecords.put(key, null);
             }
         } else {
             oldvalue = currentDataRecords.remove(key);
@@ -198,19 +198,19 @@ public class DataBaseTable implements Table {
     }
 
     @Override
-    public int commit () {
+    public int commit() {
         int savedChanges = currentDataRecords.size();
         try {
-            for(Map.Entry<String, String> pair : currentDataRecords.entrySet()) {
+            for (Map.Entry<String, String> pair : currentDataRecords.entrySet()) {
                 DbRecord record = records.get(getNumberofRecords(pair.getKey()));
                 if (pair.getValue() == null) {
                     record.remove(pair.getKey());
                 } else {
                     if (record == null) {
-                        int numberofdir = Math.abs(pair.getKey().getBytes(CODE)[0]%PARTITIONS);
-                        int numberoffile = Math.abs((pair.getKey().getBytes(CODE)[0]/PARTITIONS)%PARTITIONS);
-                        record = new DbRecord(pathtotable,numberofdir,numberoffile);
-                        records.put(getNumberofRecords(pair.getKey()),record);
+                        int numberofdir = Math.abs(pair.getKey().getBytes(CODE)[0] % PARTITIONS);
+                        int numberoffile = Math.abs((pair.getKey().getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
+                        record = new DbRecord(pathtotable, numberofdir, numberoffile);
+                        records.put(getNumberofRecords(pair.getKey()), record);
                     }
                     record.put(pair.getKey(), pair.getValue());
                 }

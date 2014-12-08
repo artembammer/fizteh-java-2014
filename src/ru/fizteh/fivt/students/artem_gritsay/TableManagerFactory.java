@@ -7,7 +7,7 @@ import ru.fizteh.fivt.storage.strings.TableProviderFactory;
 public final class TableManagerFactory implements TableProviderFactory {
     @Override
     public TableProvider create(String dir) {
-        if(dir==null) {
+        if (dir == null) {
             throw new IllegalArgumentException("Directory name is null");
         }
         return new TableManager(dir);

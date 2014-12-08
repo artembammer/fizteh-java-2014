@@ -19,8 +19,8 @@ public class Interpretator {
         this.in = input;
         this.out = output;
         this.func = func;
-        for(Command cmd : commands) {
-            this.commands.put(cmd.name(),cmd);
+        for (Command cmd : commands) {
+            this.commands.put(cmd.name(), cmd);
         }
         if (in == null || out == null) {
             throw new IllegalArgumentException("Stream is null");
@@ -28,23 +28,23 @@ public class Interpretator {
     }
 
     private void parseline(String[] command) throws Exception {
-        if (command.length > 0 && ! command[0].isEmpty()) {
+        if (command.length > 0 && !command[0].isEmpty()) {
             String nameofcommand = command[0];
-            if (command.equals("exit")) {
-                if(exitFlag == null) {
+            if (nameofcommand.equals("exit")) {
+                if (exitFlag == null) {
                     throw new StopException(false);
                 }
-                if(exitFlag.call()) {
+                if (exitFlag.call()) {
                     throw new StopException(false);
                 } else {
                     throw new StopException(true);
                 }
             }
             Command cmd = commands.get(nameofcommand);
-            if(cmd == null) {
-                throw new StopException("No such command declared: "+ nameofcommand);
+            if (cmd == null) {
+                throw new StopException("No such command declared: " + nameofcommand);
             } else {
-                String[] args = Arrays.copyOfRange(command,1,command.length);
+                String[] args = Arrays.copyOfRange(command, 1 , command.length);
                 try {
                     cmd.run(func, args);
                 } catch (RuntimeException e) {
