@@ -25,28 +25,28 @@ public class DataBaseTable implements Table {
         nameoftable = name;
         try {
             readTable();
-        } catch (MyDataBaseException e) {
+        } catch (DataBaseException e) {
             throw new RuntimeException("Error reading table '" + getName()
                     + "': " + e.getMessage(), e);
         }
 
     }
 
-    private void readTable() throws MyDataBaseException {
+    private void readTable() throws DataBaseException {
         String[] listDir = pathtotable.toFile().list();
         for (String dir : listDir) {
             Path currentDir = pathtotable.resolve(dir);
             if (!currentDir.toFile().isDirectory() || !dir.matches(DIR_NAME)) {
-                throw new MyDataBaseException("File '" + dir + "' is not directory", null);
+                throw new DataBaseException("File '" + dir + "' is not directory", null);
             }
             String[] filelist = currentDir.toFile().list();
             if (filelist.length == 0) {
-                throw new MyDataBaseException("Directory '" + dir + "' is empty", null);
+                throw new DataBaseException("Directory '" + dir + "' is empty", null);
             }
             for (String file : filelist) {
                 Path pathtofile = currentDir.resolve(file);
                 if (!file.matches(FILE_NAME) || !pathtofile.toFile().isFile()) {
-                    throw new MyDataBaseException("Name of file '" + file + "' is not supported", null);
+                    throw new DataBaseException("Name of file '" + file + "' is not supported", null);
                 }
                 int numberofdir = Integer.parseInt(dir.substring(0, dir.length() - 4));
                 int numberoffile = Integer.parseInt(file.substring(0, file.length() - 4));
@@ -56,7 +56,7 @@ public class DataBaseTable implements Table {
         }
     }
 
-    private void writeTable() throws MyDataBaseException {
+    private void writeTable() throws DataBaseException {
         Iterator<Map.Entry<Integer, DbRecord>> it = records.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, DbRecord> record = it.next();
