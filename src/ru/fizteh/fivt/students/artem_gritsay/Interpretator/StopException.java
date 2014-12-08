@@ -2,7 +2,7 @@ package ru.fizteh.fivt.students.artem_gritsay.Interpretator;
 
 
 public class StopException extends RuntimeException {
-    boolean status;
+    private final boolean status;
     public StopException(String s) {
         super(s);
     }
