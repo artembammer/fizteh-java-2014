@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Created by artem on 25.11.14.
+ */
 public class DbRecord {
     private int numberoffile;
     private int numberofdir;
