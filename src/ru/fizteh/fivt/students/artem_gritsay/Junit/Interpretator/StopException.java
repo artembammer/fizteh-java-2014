@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.artem_gritsay.Interpretator;
+package ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator;
 
 
 public class StopException extends RuntimeException {

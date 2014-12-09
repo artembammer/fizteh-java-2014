@@ -1,11 +1,11 @@
-package ru.fizteh.fivt.students.artem_gritsay;
+package ru.fizteh.fivt.students.artem_gritsay.Storable;
 
 import ru.fizteh.fivt.storage.strings.Table;
 import ru.fizteh.fivt.storage.strings.TableProvider;
 import ru.fizteh.fivt.storage.strings.TableProviderFactory;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Command;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpretator;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.StopException;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator.Command;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator.Interpretator;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator.StopException;
 
 import java.util.List;
 import java.util.concurrent.Callable;

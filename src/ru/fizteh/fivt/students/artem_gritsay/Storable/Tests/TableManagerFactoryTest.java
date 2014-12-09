@@ -1,18 +1,17 @@
-package ru.fizteh.fivt.students.artem_gritsay.Tests;
+package ru.fizteh.fivt.students.artem_gritsay.Storable.Tests;
 
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import ru.fizteh.fivt.storage.strings.TableProvider;
+import ru.fizteh.fivt.storage.strings.TableProviderFactory;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.TableManagerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import ru.fizteh.fivt.storage.strings.TableProvider;
-import ru.fizteh.fivt.storage.strings.TableProviderFactory;
-import ru.fizteh.fivt.students.artem_gritsay.TableManagerFactory;
+import static org.junit.Assert.assertTrue;
 
 public class TableManagerFactoryTest {
     private final Path testDir = Paths.get(System.getProperty("java.io.tmpdir"), "DbTestDir");

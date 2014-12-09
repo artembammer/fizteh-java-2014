@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.artem_gritsay;
+package ru.fizteh.fivt.students.artem_gritsay.Junit;
 
 
 

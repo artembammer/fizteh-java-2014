@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.artem_gritsay;
+package ru.fizteh.fivt.students.artem_gritsay.Storable;
 
 import ru.fizteh.fivt.storage.strings.Table;
 import ru.fizteh.fivt.storage.strings.TableProvider;
@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-
 
 
 public final class TableManager implements TableProvider {

@@ -1,18 +1,17 @@
-package ru.fizteh.fivt.students.artem_gritsay.Tests;
+package ru.fizteh.fivt.students.artem_gritsay.Storable.Tests;
 
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator.Command;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.Interpretator.Interpretator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.function.BiConsumer;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Command;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpretator;
+import static org.junit.Assert.assertEquals;
 
 public class InterpreterTest {
     private final String temppathtonewline = System.getProperty("line.separator");

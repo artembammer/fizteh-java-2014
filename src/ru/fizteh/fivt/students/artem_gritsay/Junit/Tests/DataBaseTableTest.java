@@ -1,6 +1,10 @@
-package ru.fizteh.fivt.students.artem_gritsay.Tests;
+package ru.fizteh.fivt.students.artem_gritsay.Junit.Tests;
 
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import ru.fizteh.fivt.storage.strings.Table;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.DataBaseTable;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -9,12 +13,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import ru.fizteh.fivt.storage.strings.Table;
-import ru.fizteh.fivt.students.artem_gritsay.DataBaseTable;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class DataBaseTableTest {
     private final Path temppathtoroot = Paths.get(System.getProperty("java.io.tmpdir"), "DbTestDir");

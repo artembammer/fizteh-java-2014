@@ -1,4 +1,4 @@
-package ru.fizteh.fivt.students.artem_gritsay.Interpretator;
+package ru.fizteh.fivt.students.artem_gritsay.Storable.Interpretator;
 
 import java.util.function.BiConsumer;
 

@@ -1,19 +1,18 @@
-package ru.fizteh.fivt.students.artem_gritsay.Tests;
+package ru.fizteh.fivt.students.artem_gritsay.Storable.Tests;
 
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import ru.fizteh.fivt.storage.strings.Table;
+import ru.fizteh.fivt.storage.strings.TableProvider;
+import ru.fizteh.fivt.students.artem_gritsay.Junit.TableManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import ru.fizteh.fivt.storage.strings.Table;
-import ru.fizteh.fivt.storage.strings.TableProvider;
-import ru.fizteh.fivt.students.artem_gritsay.TableManager;
+import static org.junit.Assert.*;
 
 public class TableManagerTest {
     private final Path temptestDir = Paths.get(System.getProperty("java.io.tmpdir"), "DataBaseTestDir");
