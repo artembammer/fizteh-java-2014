@@ -28,6 +28,7 @@ public class DataBaseTableTest {
     private final String requiredSubfileName = numberoffile + ".dat";
     private final String testKey = "key";
     private final String wrongSubfileName = "sdfsdf";
+    public static final int PARTITIONS = 16;
 
     @Before
     public void run() {
@@ -223,8 +224,8 @@ public class DataBaseTableTest {
         test.commit();
         assertEquals(testValue, test.remove(testKey));
         test.commit();
-        String subdirectoryName = testKey.getBytes()[0] % 16 + ".dir";
-        String fileName = (testKey.getBytes()[0] / 16) % 16 + ".dat";
+        String subdirectoryName = testKey.getBytes()[0] % PARTITIONS + ".dir";
+        String fileName = (testKey.getBytes()[0] / PARTITIONS) % PARTITIONS + ".dat";
         Path filePath = Paths.get(temppathtoroot.toString(), subdirectoryName, fileName);
         assertFalse(filePath.toFile().exists());
     }
