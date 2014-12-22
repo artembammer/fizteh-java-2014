@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 
 public final class Main {
-    private static void execute(DataBaseState currentstate, String[] args) {
+    private static void execute(final DataBaseState currentstate, final String[] args) {
         Interpretator interpretator = new Interpretator(currentstate, new Command[] {
                 new Command("put", 2 , new BiConsumer<Object, String[]>() {
                     @Override
