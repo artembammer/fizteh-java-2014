@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Command;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpretator;
+import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpreter;
 
 public class InterpreterTest {
     private final String temppathtonewline = System.getProperty("line.separator");
@@ -29,13 +29,13 @@ public class InterpreterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInterpreterThrowsExceptionConstructedForNullStream() {
-        new Interpretator(null, new Command[] {}, null, null);
+        new Interpreter(null, new Command[] {}, null, null);
     }
 
     @Test
     public void runInInteractive()
             throws Exception {
-        Interpretator interpretator = new Interpretator(null, new Command[] {
+        Interpreter interpreter = new Interpreter(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {
                     @Override
                     public void accept(Object testConnector, String[] arguments) {
@@ -43,14 +43,14 @@ public class InterpreterTest {
                     }
                 })}, new ByteArrayInputStream(
                 (testCommand + temppathtonewline + "exit" + temppathtonewline).getBytes()), printStream);
-        interpretator.run(new String[]{});
+        interpreter.run(new String[]{});
         assertEquals(" $" + testOutput + temppathtonewline + " $",
                 outputStream.toString());
     }
 
     @Test
     public void runInBatchMode() throws Exception {
-        Interpretator interpreter = new Interpretator(null, new Command[] {
+        Interpreter interpreter = new Interpreter(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {
                     @Override
                     public void accept(Object testConnector, String[] arguments) {
@@ -63,7 +63,7 @@ public class InterpreterTest {
 
     @Test
     public void butchModeForUnexpectedCommand() throws Exception {
-        Interpretator interpreter = new Interpretator(null, new Command[] {},
+        Interpreter interpreter = new Interpreter(null, new Command[] {},
                 new ByteArrayInputStream(new byte[] {}), printStream);
         interpreter.run(new String[] {testCommand + ";", testCommand});
         assertEquals("No such command declared: "
@@ -74,7 +74,7 @@ public class InterpreterTest {
     public void runInterpreterInInteractiveModeForUnexpectedCommand()
             throws Exception {
         String testInput = testCommand + temppathtonewline + testCommand;
-        Interpretator interpreter = new Interpretator(null, new Command[] {},
+        Interpreter interpreter = new Interpreter(null, new Command[] {},
                 new ByteArrayInputStream(testInput.getBytes()), printStream);
         interpreter.run(new String[] {});
         String expectedOutput
@@ -87,7 +87,7 @@ public class InterpreterTest {
     @Test
     public void commandWithWrongNumberOfArguments()
             throws Exception {
-        Interpretator interpreter = new Interpretator(null, new Command[] {
+        Interpreter interpreter = new Interpreter(null, new Command[] {
                 new Command("test", 0, new BiConsumer<Object, String[]>() {
                     @Override
                     public void accept(Object testConnector, String[] arguments) {

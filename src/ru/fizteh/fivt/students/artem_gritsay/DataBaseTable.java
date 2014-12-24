@@ -9,20 +9,19 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class DataBaseTable implements Table {
-    private String nameoftable;
-    public static final int PARTITIONS = 16;
+
+    private String nameOfTable;
     private Map<Integer, DbRecord> records;
-    private Path pathtotable;
+    private Path pathToTable;
     private Map<String, String> currentDataRecords;
-    public static final String CODE = "UTF-8";
     private static final String DIR_NAME = "([0-9]|1[0-5])\\.dir";
     private static final String FILE_NAME = "([0-9]|1[0-5])\\.dat";
 
-    public DataBaseTable(Path pathtotable, String name) {
+    public DataBaseTable(Path pathToTable, String name) {
         records = new HashMap<>();
         currentDataRecords = new HashMap<>();
-        this.pathtotable = pathtotable;
-        nameoftable = name;
+        this.pathToTable = pathToTable;
+        nameOfTable = name;
         try {
             readTable();
         } catch (DataBaseException e) {
@@ -33,9 +32,9 @@ public class DataBaseTable implements Table {
     }
 
     private void readTable() throws DataBaseException {
-        String[] listDir = pathtotable.toFile().list();
+        String[] listDir = pathToTable.toFile().list();
         for (String dir : listDir) {
-            Path currentDir = pathtotable.resolve(dir);
+            Path currentDir = pathToTable.resolve(dir);
             if (!currentDir.toFile().isDirectory() || !dir.matches(DIR_NAME)) {
                 throw new DataBaseException("File '" + dir + "' is not directory", null);
             }
@@ -48,10 +47,10 @@ public class DataBaseTable implements Table {
                 if (!file.matches(FILE_NAME) || !pathtofile.toFile().isFile()) {
                     throw new DataBaseException("Name of file '" + file + "' is not supported", null);
                 }
-                int numberofdir = Integer.parseInt(dir.substring(0, dir.length() - 4));
-                int numberoffile = Integer.parseInt(file.substring(0, file.length() - 4));
-                DbRecord record = new DbRecord(pathtotable, numberofdir, numberoffile);
-                records.put(numberofdir * 100 + numberoffile, record);
+                int numberOfDir = Integer.parseInt(dir.substring(0, dir.length() - DbRecord.DIR.length()));
+                int numberOfFile = Integer.parseInt(file.substring(0, file.length() - DbRecord.DIR.length()));
+                DbRecord record = new DbRecord(pathToTable, numberOfDir, numberOfFile);
+                records.put(numberOfDir * 100 + numberOfFile, record);
             }
         }
     }
@@ -71,15 +70,15 @@ public class DataBaseTable implements Table {
         return currentDataRecords.size();
     }
     private int getNumberofRecords(String key) {
-        int numberoffile;
-        int numberofdir;
+        int numberOfFile;
+        int numberOfDir;
         try {
-            numberofdir = Math.abs(key.getBytes(CODE)[0] % PARTITIONS);
-            numberoffile = Math.abs((key.getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
+            numberOfDir = Math.abs(key.getBytes(DbRecord.CODE)[0] % DbRecord.PARTITIONS);
+            numberOfFile = Math.abs((key.getBytes(DbRecord.CODE)[0] / DbRecord.PARTITIONS) % DbRecord.PARTITIONS);
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Unable to encode key to " + CODE, e);
+            throw new IllegalArgumentException("Unable to encode key to " + DbRecord.CODE, e);
         }
-        return numberofdir * PARTITIONS + numberoffile;
+        return numberOfDir * DbRecord.PARTITIONS + numberOfFile;
     }
 
     @Override
@@ -113,12 +112,7 @@ public class DataBaseTable implements Table {
         }
         return numberOfRecords;
     }
-
-    @Override
-    public String remove(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key is null");
-        }
+    public String changeValue(String key) {
         String oldvalue;
         if (!currentDataRecords.containsKey(key)) {
             DbRecord record = records.get(getNumberofRecords(key));
@@ -137,27 +131,21 @@ public class DataBaseTable implements Table {
         }
         return oldvalue;
     }
+    @Override
+    public String remove(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key is null");
+        }
+        String oldvalue = changeValue(key);
+        return oldvalue;
+    }
 
     @Override
     public String put(String key, String value) {
         if (key == null || value == null) {
             throw new IllegalArgumentException("Key or value is a null-string");
         }
-        String oldValue;
-        if (!currentDataRecords.containsKey(key)) {
-            DbRecord record = records.get(getNumberofRecords(key));
-            if (record == null) {
-                oldValue = null;
-            } else {
-                try {
-                    oldValue = record.get(key);
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                }
-            }
-        } else {
-            oldValue = currentDataRecords.remove(key);
-        }
+        String oldValue = changeValue(key);
         currentDataRecords.put(key, value);
         return oldValue;
     }
@@ -187,7 +175,7 @@ public class DataBaseTable implements Table {
 
     @Override
     public String getName() {
-        return nameoftable;
+        return nameOfTable;
     }
 
     @Override
@@ -207,9 +195,11 @@ public class DataBaseTable implements Table {
                     record.remove(pair.getKey());
                 } else {
                     if (record == null) {
-                        int numberofdir = Math.abs(pair.getKey().getBytes(CODE)[0] % PARTITIONS);
-                        int numberoffile = Math.abs((pair.getKey().getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
-                        record = new DbRecord(pathtotable, numberofdir, numberoffile);
+                        int numberOfDir = Math.abs(pair.getKey().getBytes(DbRecord.CODE)[0]
+                                % DbRecord.PARTITIONS);
+                        int numberOfFile = Math.abs((pair.getKey().getBytes(DbRecord.CODE)[0]
+                                / DbRecord.PARTITIONS) % DbRecord.PARTITIONS);
+                        record = new DbRecord(pathToTable, numberOfDir, numberOfFile);
                         records.put(getNumberofRecords(pair.getKey()), record);
                     }
                     record.put(pair.getKey(), pair.getValue());
@@ -223,8 +213,4 @@ public class DataBaseTable implements Table {
         }
         return savedChanges;
     }
-
-
-
-
 }

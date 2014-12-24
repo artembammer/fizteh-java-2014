@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.concurrent.Callable;
 
 
-public class Interpretator {
+public class Interpreter {
 
     private InputStream in;
     private PrintStream out;
@@ -14,7 +14,7 @@ public class Interpretator {
     private Object func;
     private Callable<Boolean> exitFlag;
 
-    public Interpretator(Object func, Command[] commands, InputStream input, PrintStream output) {
+    public Interpreter(Object func, Command[] commands, InputStream input, PrintStream output) {
         this.commands = new HashMap<>();
         this.in = input;
         this.out = output;
@@ -27,7 +27,7 @@ public class Interpretator {
         }
     }
 
-    private void parseline(String[] command) throws Exception {
+    private void parseLine(String[] command) throws Exception {
         if (command.length > 0 && !command[0].isEmpty()) {
             String nameofcommand = command[0];
             if (nameofcommand.equals("exit")) {
@@ -57,7 +57,7 @@ public class Interpretator {
         String[] cmds = line.split(";");
         try {
             for (String current : cmds) {
-                parseline(current.trim().split("\\s+"));
+                parseLine(current.trim().split("\\s+"));
             }
             return false;
         } catch (StopException e) {
@@ -115,12 +115,11 @@ public class Interpretator {
         return exitStatus;
     }
 
-    public Interpretator(Object func, Command[] commands) {
+    public Interpreter(Object func, Command[] commands) {
         this(func, commands, System.in, System.out);
     }
+
     public void setExitFlags(Callable<Boolean> callable) {
         exitFlag = callable;
     }
-
-
 }
