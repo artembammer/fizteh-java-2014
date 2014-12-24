@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import ru.fizteh.fivt.storage.strings.Table;
 import ru.fizteh.fivt.students.artem_gritsay.DataBaseTable;
+import ru.fizteh.fivt.students.artem_gritsay.DbRecord;
 
 public class DataBaseTableTest {
     private final Path temppathtoroot = Paths.get(System.getProperty("java.io.tmpdir"), "DbTestDir");
@@ -32,7 +33,7 @@ public class DataBaseTableTest {
     @Before
     public void run() {
         temppathtoroot.toFile().mkdir();
-        byte[] b = {numberofdir + numberoffile * DataBaseTable.PARTITIONS, 'k', 'e', 'y'};
+        byte[] b = {numberofdir + numberoffile * DbRecord.PARTITIONS, 'k', 'e', 'y'};
         correctKey = new String(b);
     }
 
@@ -85,10 +86,10 @@ public class DataBaseTableTest {
         Path subfilePath = subdirectoryPath.resolve(requiredSubfileName);
         try (DataOutputStream file
                      = new DataOutputStream(new FileOutputStream(subfilePath.toString()))) {
-            file.write(correctKey.getBytes(DataBaseTable.CODE));
+            file.write(correctKey.getBytes(DbRecord.CODE));
             file.write('\0');
             file.writeInt(correctKey.length() + 1 + offset);
-            file.write(testValue.getBytes(DataBaseTable.CODE));
+            file.write(testValue.getBytes(DbRecord.CODE));
         }
         new DataBaseTable(temppathtoroot, tableName);
     }
@@ -109,7 +110,6 @@ public class DataBaseTableTest {
     public void commitPuttingNonNullKeyAndValue() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
-        test.commit();
     }
 
     @Test
@@ -117,16 +117,13 @@ public class DataBaseTableTest {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         assertEquals(testValue, test.put(testKey, testValue));
-        test.commit();
     }
 
     @Test
     public void commitOverwritingCommitedKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
-        test.commit();
         assertEquals(testValue, test.put(testKey, testValue));
-        test.commit();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -152,7 +149,6 @@ public class DataBaseTableTest {
     public void getCalledForComittedExistentKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
-        test.commit();
         assertEquals(testValue, test.get(testKey));
     }
 
@@ -181,14 +177,12 @@ public class DataBaseTableTest {
     public void testRemoveThrowsExceptionCalledForNullKey() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         test.remove(null);
-        test.commit();
     }
 
     @Test
     public void commitRemovingNonexistentKeyFromNonCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.remove(testKey));
-        test.commit();
     }
 
     @Test
@@ -196,23 +190,19 @@ public class DataBaseTableTest {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
         assertEquals(testValue, test.remove(testKey));
-        test.commit();
     }
 
     @Test
     public void commitRemovingExistentKeyFromCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
-        test.commit();
         assertEquals(testValue, test.remove(testKey));
-        test.commit();
     }
 
     @Test
     public void commitRemovingNonexistentKeyFromCommitedFile() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.remove(testKey));
-        test.commit();
     }
 
 
@@ -220,9 +210,7 @@ public class DataBaseTableTest {
     public void commitEmptiedAfterLoadingTable() {
         Table test = new DataBaseTable(temppathtoroot, tableName);
         assertEquals(null, test.put(testKey, testValue));
-        test.commit();
         assertEquals(testValue, test.remove(testKey));
-        test.commit();
         String subdirectoryName = testKey.getBytes()[0] % 16 + ".dir";
         String fileName = (testKey.getBytes()[0] / 16) % 16 + ".dat";
         Path filePath = Paths.get(temppathtoroot.toString(), subdirectoryName, fileName);
@@ -230,7 +218,7 @@ public class DataBaseTableTest {
     }
 
     @After
-    public void tear() {
+    public void tearDown() {
         for (File curFile : temppathtoroot.toFile().listFiles()) {
             if (curFile.isDirectory()) {
                 for (File subFile : curFile.listFiles()) {

@@ -4,7 +4,7 @@ import ru.fizteh.fivt.storage.strings.Table;
 import ru.fizteh.fivt.storage.strings.TableProvider;
 import ru.fizteh.fivt.storage.strings.TableProviderFactory;
 import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Command;
-import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpretator;
+import ru.fizteh.fivt.students.artem_gritsay.Interpretator.Interpreter;
 import ru.fizteh.fivt.students.artem_gritsay.Interpretator.StopException;
 
 import java.util.List;
@@ -12,8 +12,10 @@ import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 
 public final class Main {
+    public static final String NOTABLE = "There is no such table";
+    public static final String MAINPATH = "fizteh.db.dir";
     private static void execute(final DataBaseState currentstate, final String[] args) {
-        Interpretator interpretator = new Interpretator(currentstate, new Command[] {
+        Interpreter interpreter = new Interpreter(currentstate, new Command[] {
                 new Command("put", 2 , new BiConsumer<Object, String[]>() {
                     @Override
                     public void accept(Object o, String[] strings) {
@@ -27,7 +29,7 @@ public final class Main {
                                 System.out.println("new");
                             }
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -44,7 +46,7 @@ public final class Main {
                                 System.out.println("not found");
                             }
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -60,7 +62,7 @@ public final class Main {
                                 System.out.println("not found");
                             }
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -71,7 +73,7 @@ public final class Main {
                         if (table != null) {
                             System.out.println(String.join(", ", table.list()));
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -82,7 +84,7 @@ public final class Main {
                         if (link != null) {
                             System.out.println(link.size());
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -93,7 +95,7 @@ public final class Main {
                         if (table != null) {
                             System.out.println(table.commit());
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -104,7 +106,7 @@ public final class Main {
                         if (link != null) {
                             System.out.println(link.rollback());
                         } else {
-                            throw new StopException("There is no such table");
+                            throw new StopException(NOTABLE);
                         }
                     }
                 }),
@@ -175,7 +177,7 @@ public final class Main {
                     }
                 })
         });
-        interpretator.setExitFlags(new Callable<Boolean>() {
+        interpreter.setExitFlags(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 DataBaseTable table = (DataBaseTable) currentstate.getTable();
@@ -189,7 +191,7 @@ public final class Main {
 
         });
         try {
-            if (interpretator.run(args)) {
+            if (interpreter.run(args)) {
                 System.exit(1);
             } else {
                 System.exit(0);
@@ -207,7 +209,8 @@ public final class Main {
 
 
     public static void main(String[] args) {
-        String dbTablePath = System.getProperty("fizteh.db.dir");
+
+        String dbTablePath = System.getProperty(MAINPATH);
         if (dbTablePath == null) {
             System.err.println("Incorrect directory");
             System.exit(1);

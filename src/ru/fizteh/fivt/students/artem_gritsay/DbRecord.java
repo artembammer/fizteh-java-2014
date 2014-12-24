@@ -11,6 +11,8 @@ import java.util.*;
  * Created by artem on 25.11.14.
  */
 public class DbRecord {
+    public static final String DIR = ".dir";
+    public static final String FILE = ".dat";
     private int numberoffile;
     private int numberofdir;
     public static final String CODE = "UTF-8";
@@ -22,7 +24,7 @@ public class DbRecord {
         this.numberofdir = numberofdir;
         this.numberoffile = numberoffile;
         data = new HashMap<>();
-        pathfofile = Paths.get(tableDirPath.toString(), numberofdir + ".dir", numberoffile + ".dat");
+        pathfofile = Paths.get(tableDirPath.toString(), numberofdir + DIR, numberoffile + FILE);
         if (pathfofile.toFile().exists()) {
             try {
                 readFile();
@@ -83,11 +85,13 @@ public class DbRecord {
             throw new IOException("Unable to read");
         }
     }
+
     private boolean checkkey(String key) throws UnsupportedEncodingException {
         int expectednumberofdir = Math.abs(key.getBytes(CODE)[0] % PARTITIONS);
         int expectednumberoffile = Math.abs((key.getBytes(CODE)[0] / PARTITIONS) % PARTITIONS);
         return (numberofdir == expectednumberofdir && numberoffile == expectednumberoffile);
     }
+
     private void writeToFile() throws IOException {
         pathfofile.getParent().toFile().mkdir();
         try (RandomAccessFile file = new RandomAccessFile(pathfofile.toString(), "rw")) {
@@ -165,9 +169,5 @@ public class DbRecord {
             }
         }
     }
-
-
-
-
 }
 

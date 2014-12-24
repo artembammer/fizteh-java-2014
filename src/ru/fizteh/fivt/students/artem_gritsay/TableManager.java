@@ -12,7 +12,7 @@ import java.util.List;
 
 
 
-public final class TableManager implements TableProvider {
+public final class  TableManager implements TableProvider {
     private static final String TABLENAME = ".*\\.|\\..*|.*(/|\\\\).*";
     private static final String NULL_NAME_TABLE = "Table name is null";
     private static final String INCORRECT_TABLE_NAME = "Incorrect table name";
@@ -50,7 +50,7 @@ public final class TableManager implements TableProvider {
         try {
             pathtotables.resolve(name);
             if (name.matches(INCORRECT_TABLE_NAME)) {
-                throw new IllegalArgumentException("INCORRECT_TABLE_NAME");
+                throw new IllegalArgumentException(INCORRECT_TABLE_NAME);
             }
             if (tables.contains(name)) {
                 return new DataBaseTable(pathtotables.resolve(name), name);
